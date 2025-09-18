@@ -5,12 +5,13 @@ import { prisma } from "@/app/lib/prisma";
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context?: { params: { id: string } }
 ) {
   const { completed, status } = await request.json();
+  const id = context?.params?.id;
 
   const updated = await prisma.task.update({
-    where: { id: Number(params.id) },
+    where: { id: Number(id) },
     data: {
       ...(completed !== undefined ? { completed } : {}),
       ...(status ? { status } : {}),
@@ -24,10 +25,11 @@ export async function PUT(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: { id: string } }
+  context?: { params: { id: string } }
 ) {
+  const id = context?.params?.id;
   await prisma.task.delete({
-    where: { id: Number(params.id) },
+    where: { id: Number(id) },
   });
 
   return NextResponse.json({ message: "Task deleted" });
