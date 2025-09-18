@@ -5,10 +5,10 @@ import { prisma } from "@/app/lib/prisma";
 
 export async function PUT(
   request: Request,
-  context?: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { completed, status } = await request.json();
-  const id = context?.params?.id;
+  const { id } = await params;
 
   const updated = await prisma.task.update({
     where: { id: Number(id) },
@@ -25,9 +25,9 @@ export async function PUT(
 
 export async function DELETE(
   _request: Request,
-  context?: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = context?.params?.id;
+  const { id } = await params;
   await prisma.task.delete({
     where: { id: Number(id) },
   });
